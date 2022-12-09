@@ -4,20 +4,27 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/theme"
+	"fyne.io/fyne/v2/widget"
 	theme2 "github.com/sum-project/pass-locker2/theme"
 )
 
 type App struct {
 	Win fyne.Window
 	App fyne.App
+
+	pwd            *widget.Entry
+	pwdEntropy     binding.String
+	pwdOptionsBind binding.BoolList
+	lengthBind     binding.Float
 }
 
 func Start() {
 	a := initApp()
 
 	tabs := container.NewAppTabs(
-		container.NewTabItemWithIcon("Generowanie hasła", theme.DocumentIcon(), container.NewPadded()),
+		container.NewTabItemWithIcon("Generowanie hasła", theme.DocumentIcon(), container.NewPadded(generatorWindow(a))),
 		container.NewTabItemWithIcon("Ustawienia", theme.DocumentIcon(), container.NewPadded(settingsWindow())),
 	)
 
