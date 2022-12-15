@@ -9,14 +9,23 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"github.com/sum-project/pass-locker2/db/repository"
 	theme2 "github.com/sum-project/pass-locker2/theme"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+	"log"
+	"os"
 )
 
 type App struct {
 	Win fyne.Window
 	App fyne.App
 
+	user *repository.User
+
 	userRepository     repository.UserRepository
 	passwordRepository repository.PasswordRepository
+
+	errorLog *log.Logger
+	infoLog  *log.Logger
 
 	pwd            *widget.Entry
 	pwdEntropy     binding.String
@@ -27,22 +36,32 @@ type App struct {
 func Start() {
 	a := initApp()
 
-	tabs := container.NewAppTabs(
-		container.NewTabItemWithIcon("Logowanie", theme.LoginIcon(), container.NewPadded(loginPage())),
-		container.NewTabItemWithIcon("Rejestracja", theme.HomeIcon(), container.NewPadded(registerPage())),
-		container.NewTabItemWithIcon("Generowanie hasła", theme.DocumentIcon(), container.NewPadded(generatorWindow(a))),
-		container.NewTabItemWithIcon("Ustawienia", theme.DocumentIcon(), container.NewPadded(settingsWindow())),
-	)
+	gui(a)
+
+	a.Win.Resize(fyne.NewSize(a.Win.Canvas().Size().Width, a.Win.Canvas().Size().Height))
+	a.Win.CenterOnScreen()
+	a.Win.SetMaster()
+	a.Win.ShowAndRun()
+}
+
+func gui(a *App) {
+	tabs := container.NewAppTabs()
+
+	if a.user != nil {
+		tabs.Append(container.NewTabItemWithIcon("Generowanie hasła", theme.DocumentIcon(), container.NewPadded(generatorWindow(a))))
+		tabs.Append(container.NewTabItemWithIcon("Ustawienia", theme.DocumentIcon(), container.NewPadded(settingsWindow())))
+	}
+
+	if a.user == nil {
+		tabs.Append(container.NewTabItemWithIcon("Logowanie", theme.LoginIcon(), container.NewPadded(loginPage(a))))
+		tabs.Append(container.NewTabItemWithIcon("Rejestracja", theme.HomeIcon(), container.NewPadded(registerPage(a))))
+	}
 
 	tabs.OnSelected = func(t *container.TabItem) {
 		t.Content.Refresh()
 	}
 
 	a.Win.SetContent(tabs)
-	a.Win.Resize(fyne.NewSize(a.Win.Canvas().Size().Width, a.Win.Canvas().Size().Height))
-	a.Win.CenterOnScreen()
-	a.Win.SetMaster()
-	a.Win.ShowAndRun()
 }
 
 func initApp() *App {
@@ -54,8 +73,34 @@ func initApp() *App {
 
 	w := a.NewWindow("Pass Locker")
 
-	return &App{
-		Win: w,
-		App: a,
+	db, err := initSQLite(a.Storage().RootURI().Path())
+	if err != nil {
+		panic(err)
 	}
+
+	return &App{
+		Win:            w,
+		App:            a,
+		errorLog:       log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile),
+		infoLog:        log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime),
+		userRepository: repository.NewUserRepository(db),
+	}
+}
+
+func initSQLite(appPath string) (*gorm.DB, error) {
+	path := appPath + "/sql.db"
+
+	if os.Getenv("DB_PATH") != "" {
+		path = os.Getenv("DB_PATH")
+	}
+
+	db, err := gorm.Open(sqlite.Open(path), &gorm.Config{})
+	if err != nil {
+		return nil, err
+	}
+
+	db.AutoMigrate(&repository.User{})
+	db.AutoMigrate(&repository.Password{})
+
+	return db, nil
 }
