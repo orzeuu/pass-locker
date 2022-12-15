@@ -7,12 +7,16 @@ import (
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+	"github.com/sum-project/pass-locker2/db/repository"
 	theme2 "github.com/sum-project/pass-locker2/theme"
 )
 
 type App struct {
 	Win fyne.Window
 	App fyne.App
+
+	userRepository     repository.UserRepository
+	passwordRepository repository.PasswordRepository
 
 	pwd            *widget.Entry
 	pwdEntropy     binding.String
@@ -24,6 +28,7 @@ func Start() {
 	a := initApp()
 
 	tabs := container.NewAppTabs(
+		container.NewTabItemWithIcon("Logowanie", theme.LoginIcon(), container.NewPadded(loginPage())),
 		container.NewTabItemWithIcon("Generowanie hasła", theme.DocumentIcon(), container.NewPadded(generatorWindow(a))),
 		container.NewTabItemWithIcon("Ustawienia", theme.DocumentIcon(), container.NewPadded(settingsWindow())),
 	)
