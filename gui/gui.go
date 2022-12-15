@@ -49,6 +49,7 @@ func gui(a *App) {
 
 	if a.user != nil {
 		tabs.Append(container.NewTabItemWithIcon("Generowanie hasła", theme.DocumentIcon(), container.NewPadded(generatorWindow(a))))
+		tabs.Append(container.NewTabItemWithIcon("Lista haseł", theme.ListIcon(), container.NewPadded(listPage(a))))
 		tabs.Append(container.NewTabItemWithIcon("Ustawienia", theme.DocumentIcon(), container.NewPadded(settingsWindow())))
 	}
 
@@ -79,11 +80,14 @@ func initApp() *App {
 	}
 
 	return &App{
-		Win:            w,
-		App:            a,
-		errorLog:       log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile),
-		infoLog:        log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime),
-		userRepository: repository.NewUserRepository(db),
+		Win: w,
+		App: a,
+
+		errorLog: log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile),
+		infoLog:  log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime),
+
+		userRepository:     repository.NewUserRepository(db),
+		passwordRepository: repository.NewPasswordRepository(db),
 	}
 }
 

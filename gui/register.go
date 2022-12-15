@@ -30,7 +30,6 @@ func registerPage(a *App) fyne.CanvasObject {
 		})
 		if err != nil {
 			a.errorLog.Fatalln(err)
-			return
 		}
 		a.user = &user
 		gui(a)
