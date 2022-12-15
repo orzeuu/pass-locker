@@ -59,7 +59,7 @@ func generatorWindow(a *App) fyne.CanvasObject {
 
 	pwdEntropy := binding.NewString()
 	pwdEntropyLabel := widget.NewLabelWithData(pwdEntropy)
-	pwdEntropyText := canvas.NewText("Siła hasła：", nil)
+	pwdEntropyText := canvas.NewText("Siła hasła ", nil)
 	a.pwdEntropy = pwdEntropy
 
 	slide.OnChanged = func(f float64) {

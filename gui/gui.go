@@ -31,6 +31,9 @@ type App struct {
 	pwdEntropy     binding.String
 	pwdOptionsBind binding.BoolList
 	lengthBind     binding.Float
+
+	passwords     [][]interface{}
+	passwordTable *widget.Table
 }
 
 func Start() {
@@ -49,7 +52,8 @@ func gui(a *App) {
 
 	if a.user != nil {
 		tabs.Append(container.NewTabItemWithIcon("Generowanie hasła", theme.DocumentIcon(), container.NewPadded(generatorWindow(a))))
-		tabs.Append(container.NewTabItemWithIcon("Lista haseł", theme.ListIcon(), container.NewPadded(listPage(a))))
+		tabs.Append(container.NewTabItemWithIcon("Lista haseł", theme.ListIcon(), container.NewPadded(passwordListPage(a))))
+		tabs.Append(container.NewTabItemWithIcon("Dodaj hasło", theme.ContentAddIcon(), container.NewPadded(addPasswordPage(a))))
 		tabs.Append(container.NewTabItemWithIcon("Ustawienia", theme.DocumentIcon(), container.NewPadded(settingsWindow())))
 	}
 
