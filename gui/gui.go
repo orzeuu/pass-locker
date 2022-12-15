@@ -29,6 +29,7 @@ func Start() {
 
 	tabs := container.NewAppTabs(
 		container.NewTabItemWithIcon("Logowanie", theme.LoginIcon(), container.NewPadded(loginPage())),
+		container.NewTabItemWithIcon("Rejestracja", theme.HomeIcon(), container.NewPadded(registerPage())),
 		container.NewTabItemWithIcon("Generowanie hasła", theme.DocumentIcon(), container.NewPadded(generatorWindow(a))),
 		container.NewTabItemWithIcon("Ustawienia", theme.DocumentIcon(), container.NewPadded(settingsWindow())),
 	)
