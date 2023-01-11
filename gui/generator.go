@@ -20,7 +20,7 @@ type Password struct {
 	Length    uint
 }
 
-func generatorWindow(a *App) fyne.CanvasObject {
+func (a *App) generatorWindow() fyne.CanvasObject {
 	number := a.App.Preferences().BoolWithFallback("Number", false)
 	lowercase := a.App.Preferences().BoolWithFallback("Lowercase", false)
 	uppercase := a.App.Preferences().BoolWithFallback("Uppercase", false)
@@ -74,10 +74,10 @@ func generatorWindow(a *App) fyne.CanvasObject {
 	a.lengthBind = lengthBind
 	a.pwdOptionsBind = pwdOptionsBind
 
-	NumberCheck := widgetCheck(a, "Numer", "Number", number)
-	LowercaseCheck := widgetCheck(a, "Małe litery", "Lowercase", lowercase)
-	UppercaseCheck := widgetCheck(a, "Duże litery", "Uppercase", uppercase)
-	SymbolCheck := widgetCheck(a, "Symbole", "Symbol", symbol)
+	NumberCheck := a.widgetCheck("Numer", "Number", number)
+	LowercaseCheck := a.widgetCheck("Małe litery", "Lowercase", lowercase)
+	UppercaseCheck := a.widgetCheck("Duże litery", "Uppercase", uppercase)
+	SymbolCheck := a.widgetCheck("Symbole", "Symbol", symbol)
 
 	copyBtn := widget.NewButtonWithIcon("Kopiuj", theme.ContentCopyIcon(), func() {
 		a.Win.Clipboard().SetContent(pwd.Text)
@@ -121,7 +121,7 @@ func generatorWindow(a *App) fyne.CanvasObject {
 	return content
 }
 
-func widgetCheck(a *App, label, key string, checked bool) *widget.Check {
+func (a *App) widgetCheck(label, key string, checked bool) *widget.Check {
 	check := widget.NewCheck(label, func(b bool) {})
 	check.SetChecked(checked)
 	check.OnChanged = func(b bool) {

@@ -5,9 +5,10 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 	"github.com/sum-project/pass-locker2/db/repository"
+	"github.com/sum-project/pass-locker2/password"
 )
 
-func addPasswordPage(a *App) fyne.CanvasObject {
+func (a *App) addPasswordPage() fyne.CanvasObject {
 	itemEntry := widget.NewEntry()
 	itemEntry.SetPlaceHolder("Podaj item...")
 
@@ -32,17 +33,21 @@ func addPasswordPage(a *App) fyne.CanvasObject {
 	)
 
 	addPasswordForm.OnSubmit = func() {
-		password, err := a.passwordRepository.AddPassword(repository.AddPasswordParams{
+		pwdText, err := password.Encrypt([]byte(passwordEntry.Text), []byte(a.userPassword))
+		if err != nil {
+			a.errorLog.Fatalln(err)
+		}
+		pwd, err := a.passwordRepository.AddPassword(repository.AddPasswordParams{
 			Item:     itemEntry.Text,
 			Login:    loginEntry.Text,
-			Password: passwordEntry.Text,
+			Password: string(pwdText),
 			UserId:   a.user.ID,
 		})
 		if err != nil {
 			a.errorLog.Fatalln(err)
 		}
-		a.infoLog.Println(password)
-		gui(a)
+		a.infoLog.Println(pwd)
+		a.gui()
 	}
 	addPasswordForm.SubmitText = "Dodaj hasło"
 

@@ -19,7 +19,8 @@ type App struct {
 	Win fyne.Window
 	App fyne.App
 
-	user *repository.User
+	user         *repository.User
+	userPassword string
 
 	userRepository     repository.UserRepository
 	passwordRepository repository.PasswordRepository
@@ -39,7 +40,7 @@ type App struct {
 func Start() {
 	a := initApp()
 
-	gui(a)
+	a.gui()
 
 	a.Win.Resize(fyne.NewSize(a.Win.Canvas().Size().Width, a.Win.Canvas().Size().Height))
 	a.Win.CenterOnScreen()
@@ -47,19 +48,19 @@ func Start() {
 	a.Win.ShowAndRun()
 }
 
-func gui(a *App) {
+func (a *App) gui() {
 	tabs := container.NewAppTabs()
 
 	if a.user != nil {
-		tabs.Append(container.NewTabItemWithIcon("Generowanie hasła", theme.DocumentIcon(), container.NewPadded(generatorWindow(a))))
-		tabs.Append(container.NewTabItemWithIcon("Lista haseł", theme.ListIcon(), container.NewPadded(passwordListPage(a))))
-		tabs.Append(container.NewTabItemWithIcon("Dodaj hasło", theme.ContentAddIcon(), container.NewPadded(addPasswordPage(a))))
-		tabs.Append(container.NewTabItemWithIcon("Ustawienia", theme.DocumentIcon(), container.NewPadded(settingsWindow())))
+		tabs.Append(container.NewTabItemWithIcon("Generowanie hasła", theme.DocumentIcon(), container.NewPadded(a.generatorWindow())))
+		tabs.Append(container.NewTabItemWithIcon("Lista haseł", theme.ListIcon(), container.NewPadded(a.passwordListPage())))
+		tabs.Append(container.NewTabItemWithIcon("Dodaj hasło", theme.ContentAddIcon(), container.NewPadded(a.addPasswordPage())))
+		tabs.Append(container.NewTabItemWithIcon("Ustawienia", theme.DocumentIcon(), container.NewPadded(a.settingsWindow())))
 	}
 
 	if a.user == nil {
-		tabs.Append(container.NewTabItemWithIcon("Logowanie", theme.LoginIcon(), container.NewPadded(loginPage(a))))
-		tabs.Append(container.NewTabItemWithIcon("Rejestracja", theme.HomeIcon(), container.NewPadded(registerPage(a))))
+		tabs.Append(container.NewTabItemWithIcon("Logowanie", theme.LoginIcon(), container.NewPadded(a.loginPage())))
+		tabs.Append(container.NewTabItemWithIcon("Rejestracja", theme.HomeIcon(), container.NewPadded(a.registerPage())))
 	}
 
 	tabs.OnSelected = func(t *container.TabItem) {
@@ -77,7 +78,8 @@ func initApp() *App {
 	a.SetIcon(theme2.MyLogo)
 
 	w := a.NewWindow("Pass Locker")
-
+	test := a.Storage().RootURI().Path()
+	test = test + test
 	db, err := initSQLite(a.Storage().RootURI().Path())
 	if err != nil {
 		panic(err)

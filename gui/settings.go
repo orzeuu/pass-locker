@@ -8,7 +8,7 @@ import (
 	"github.com/sum-project/pass-locker2/theme"
 )
 
-func settingsWindow() fyne.CanvasObject {
+func (a *App) settingsWindow() fyne.CanvasObject {
 	themeText := canvas.NewText("Zmiena motywu", nil)
 	dropdown := widget.NewSelect([]string{"Light", "Dark"}, parseTheme())
 	t := fyne.CurrentApp().Preferences().StringWithFallback("Theme", "Light")

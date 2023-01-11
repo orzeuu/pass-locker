@@ -7,11 +7,12 @@ import (
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/sum-project/pass-locker2/db/repository"
+	"github.com/sum-project/pass-locker2/password"
 	"golang.design/x/clipboard"
 	"strconv"
 )
 
-func passwordListPage(a *App) fyne.CanvasObject {
+func (a *App) passwordListPage() fyne.CanvasObject {
 	passwords, err := a.passwordRepository.GetAllPasswords(repository.GetAllPasswordsParams{
 		UserId: a.user.ID,
 	})
@@ -19,7 +20,7 @@ func passwordListPage(a *App) fyne.CanvasObject {
 		a.errorLog.Fatalln(err)
 	}
 
-	a.passwords = passwordsSlice(passwords)
+	a.passwords = a.passwordsSlice(passwords)
 
 	a.passwordTable = widget.NewTable(
 		func() (int, int) {
@@ -53,7 +54,7 @@ func passwordListPage(a *App) fyne.CanvasObject {
 								a.errorLog.Fatalln(err)
 							}
 
-							a.passwords = passwordsSlice(passwords)
+							a.passwords = a.passwordsSlice(passwords)
 							a.passwordTable.Refresh()
 						}
 					}, a.Win)
@@ -79,7 +80,7 @@ func passwordListPage(a *App) fyne.CanvasObject {
 	return container.NewAdaptiveGrid(1, a.passwordTable)
 }
 
-func passwordsSlice(passwords []repository.Password) [][]interface{} {
+func (a *App) passwordsSlice(passwords []repository.Password) [][]interface{} {
 	var slice [][]interface{}
 
 	slice = append(slice, []interface{}{"ID", "Item", "Login", "Password", "Copy", "Delete"})
@@ -87,10 +88,15 @@ func passwordsSlice(passwords []repository.Password) [][]interface{} {
 	for _, x := range passwords {
 		var row []interface{}
 
+		pwd, err := password.Decrypt([]byte(x.Password), []byte(a.userPassword))
+		if err != nil {
+			a.errorLog.Fatalln(err)
+		}
+
 		row = append(row, strconv.FormatUint(uint64(x.ID), 10))
 		row = append(row, x.Item)
 		row = append(row, x.Login)
-		row = append(row, x.Password)
+		row = append(row, string(pwd))
 		row = append(row, widget.NewButton("Copy", func() {}))
 		row = append(row, widget.NewButton("Delete", func() {}))
 

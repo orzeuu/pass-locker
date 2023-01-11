@@ -7,7 +7,7 @@ import (
 	"github.com/sum-project/pass-locker2/db/repository"
 )
 
-func loginPage(a *App) fyne.CanvasObject {
+func (a *App) loginPage() fyne.CanvasObject {
 	loginEntry := widget.NewEntry()
 	loginEntry.SetPlaceHolder("Podaj login...")
 
@@ -28,7 +28,8 @@ func loginPage(a *App) fyne.CanvasObject {
 			a.errorLog.Fatalln(err)
 		}
 		a.user = &user
-		gui(a)
+		a.userPassword = passwordEntry.Text
+		a.gui()
 		a.infoLog.Println(user)
 	}
 
