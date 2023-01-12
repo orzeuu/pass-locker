@@ -42,7 +42,7 @@ func Start() {
 
 	a.gui()
 
-	a.Win.Resize(fyne.NewSize(a.Win.Canvas().Size().Width, a.Win.Canvas().Size().Height))
+	a.Win.Resize(fyne.NewSize(600, 600))
 	a.Win.CenterOnScreen()
 	a.Win.SetMaster()
 	a.Win.ShowAndRun()
