@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/sum-project/pass-locker2/password"
+	"github.com/orzeuu/pass-locker/password"
 	"gorm.io/gorm"
 )
 

@@ -5,7 +5,7 @@ import (
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
-	"github.com/sum-project/pass-locker2/theme"
+	"github.com/orzeuu/pass-locker/theme"
 )
 
 func (a *App) settingsWindow() fyne.CanvasObject {

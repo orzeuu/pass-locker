@@ -4,7 +4,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
-	"github.com/sum-project/pass-locker2/db/repository"
+	"github.com/orzeuu/pass-locker/db/repository"
 )
 
 func (a *App) registerPage() fyne.CanvasObject {

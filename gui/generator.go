@@ -8,7 +8,7 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	"github.com/sum-project/pass-locker2/password"
+	"github.com/orzeuu/pass-locker/password"
 	passwordvalidator "github.com/wagslane/go-password-validator"
 )
 
