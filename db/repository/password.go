@@ -7,7 +7,7 @@ import (
 type Password struct {
 	gorm.Model
 	Item     string `json:"item" gorm:"not null"`
-	Login    string `json:"login" gorm:"not null"`
+	Login    string `json:"login" gorm:"not null,unique"`
 	Password string `json:"password" gorm:"not null"`
 	UserId   uint   `json:"userId" gorm:"not null"`
 }
