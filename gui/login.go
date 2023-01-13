@@ -25,7 +25,10 @@ func (a *App) loginPage() fyne.CanvasObject {
 			Password: passwordEntry.Text,
 		})
 		if err != nil {
-			a.errorLog.Fatalln(err)
+			loginEntry.Text = ""
+			passwordEntry.Text = ""
+			a.gui()
+			return
 		}
 		a.user = &user
 		a.userPassword = passwordEntry.Text
